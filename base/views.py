@@ -1,6 +1,6 @@
 """ Views for the base application """
 from django.shortcuts import render
-from base.models import Student
+# from base.models import Student
 
 # Create your views here.
 def home(request):
