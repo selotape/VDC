@@ -29,7 +29,7 @@ def create_desktop(request):
 
 def delete_desktop(request, desktop_name):
     if request.method == 'GET':
-        desktop = Student.objects.get(name=desktop_name)
+        desktop = Desktop.objects.get(name=desktop_name)
 	if desktop != None:
 	    desktop.delete()
     return HttpResponseRedirect('/') # Redirect home after DELETE
