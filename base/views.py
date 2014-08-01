@@ -6,7 +6,7 @@ from base.forms import NewDesktopForm
 
 def client_home(request):
     # get all users desktops
-    my_desktops = Desktop.all()
+    my_desktops = Desktop.objects.all()
 
     form = NewDesktopForm()
 
@@ -15,14 +15,16 @@ def client_home(request):
         'my_desktops': my_desktops,
         'form' : form,
     }
-    return render(request, 'base/clientMainDisplay.html', context)
+    return render(request, 'base/client_home.html', context)
 
 def create_desktop(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = NewDesktopFrom(request.POST) # A form bound to the POST data
+        form = NewDesktopForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
 	    desktop = form.save(commit=False)
     	    desktop.save()
+        else:
+            print 'bad form: ', str(form)
     return HttpResponseRedirect('/') # Redirect home after POST
 
 def delete_desktop(request, desktop_name):
