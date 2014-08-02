@@ -53,9 +53,9 @@ INSTALLED_APPS = (
     'south',
 
     # Application base, containing global templates.
-    'base',
  
-   # Local apps, referenced via appname
+    # Local apps, referenced via appname
+    'base',
 )
 
 # Place bcrypt first in the list, so it will be the default password hashing
