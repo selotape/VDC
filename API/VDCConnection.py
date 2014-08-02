@@ -18,18 +18,18 @@ class VDCConnection:
         self.conn = boto.ec2.connect_to_region(region)
         assert self.conn, "Connection could not be made!"
 
-    @staticmethod
-    def __stop_new_machine(instance):
+    def __stop_new_machine(self, instance):
         i = 0
         while instance.state == "pending":
-            time.sleep(5)
-            i += 5
             assert i < 150
+            i += 5
+            time.sleep(5)
+            instance = self.conn.get_all_instances([instance.id])[0].instances[0]
         instance.stop()
 
     def create_machine(self, name, ami, key_name, instance_type=Consts.FREE_INSTANCE_TYPE, tags=None, allowed_ip_prefixes=Consts.EVERYONE):
         """
-        Creates a new instances.
+        Creates a new machine in stopped state.
         :param name: name of the instance.
         :param ami: ami to clone.
         :param key_name: name of the key-pair to be used.
@@ -42,18 +42,24 @@ class VDCConnection:
         inst = res.instances[0]
         assert inst, "Machine creation failed!"
         inst.add_tag("Name", name)
-        #t = threading.Thread(target=self.__stop_new_machine, args=[inst])
-        #t.start()
+        t = threading.Thread(target=self.__stop_new_machine, args=[inst])
+        t.start()
         return MachineDetails(inst)
 
-    def get_all_instances(self, tags=None):
+    def get_all_machines(self, tags=None):
         """
-        Returns all instances in the account.
-        :param tags: currently unused.
-        :return: a list of tuples (id, name).
+        Returns all machines in the account that contain the given tags.
+        :param tags: tags that control which machines are returned (None means all machines in the account).
+        :return: a list MachineDetails objects corresponding to the retrieved instances.
         """
-        instances = [i.instances[0] for i in self.conn.get_all_instances()]
-        #return [(inst.id, inst.__dict__["tags"]["Name"]) for inst in instants]
+        if tags:
+            keys, values = tags.keys(), tags.values()
+            filter_keys = map(lambda key: "tag:" + key, keys)
+            filter_tags = dict(zip(filter_keys, values))
+            res = self.conn.get_all_instances(filters=filter_tags)
+        else:
+            res = self.conn.get_all_instances()
+        instances = [i.instances[0] for i in res]
         return [MachineDetails(inst) for inst in instances]
 
     def terminate_machine(self, instance_id):
