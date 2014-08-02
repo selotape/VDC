@@ -9,8 +9,9 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def client_home(request):
+
     # get all users desktops
-    my_desktops = Desktop.objects.all()
+    my_desktops = Desktop.objects.filter(owner=request.user.username)
 
     form = NewDesktopForm()
 
@@ -27,6 +28,7 @@ def create_desktop(request):
         form = NewDesktopForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
 	    desktop = form.save(commit=False)
+            desktop.owner = request.user.username
     	    desktop.save()
         else:
             print 'bad form: ', str(form)

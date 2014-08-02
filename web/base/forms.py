@@ -6,4 +6,4 @@ from base.models import Desktop
 class NewDesktopForm(forms.ModelForm):
     class Meta:
         model = Desktop
-        fields = ['name', 'owner', 'ami']
+        fields = ['name', 'ami']
