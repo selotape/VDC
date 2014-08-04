@@ -45,11 +45,11 @@ def delete_desktop(request, desktop_id):
 def toggle_state(request, current_state, desktop_id):
     for case in switch(current_state):
         if case(Consts.RUNNING):
-            # vdc.stop_usage(desktop_id)
+            vdc.stop_usage(desktop_id)
             print 'desktop was running. now shut down'
             break
         if case(Consts.STANDBY):
-            # vdc.start_usage(desktop_id)
+            vdc.start_usage(desktop_id)
             print 'desktop was shutdown. now running'
             break
         if case(): # default
