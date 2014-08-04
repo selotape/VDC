@@ -29,3 +29,8 @@ class MachineDetails:
     @property
     def state(self):
         return self.__instance.state
+
+    @property
+    def hostname(self):
+        #TODO
+        return self.__instance

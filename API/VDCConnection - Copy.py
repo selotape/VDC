@@ -27,8 +27,7 @@ class VDCConnection:
             instance = self.conn.get_all_instances([instance.id])[0].instances[0]
         instance.stop()
 
-    def create_machine(self, name, ami, is_windows, key_name, key_data, username, password,
-                       instance_type=Consts.FREE_INSTANCE_TYPE, tags=None, allowed_ip_prefixes=Consts.EVERYONE):
+    def create_machine(self, name, ami, key_name, instance_type=Consts.FREE_INSTANCE_TYPE, tags=None, allowed_ip_prefixes=Consts.EVERYONE):
         """
         Creates a new machine in stopped state.
         :param name: name of the instance.
@@ -43,7 +42,6 @@ class VDCConnection:
         inst = res.instances[0]
         assert inst, "Machine creation failed!"
         inst.add_tag("Name", name)
-        #TODO tags, key, username/password, security groups, billing, info
         t = threading.Thread(target=self.__stop_new_machine, args=[inst])
         t.start()
         return MachineDetails(inst)
