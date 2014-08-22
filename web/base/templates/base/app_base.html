@@ -52,10 +52,9 @@ body {
       {% block desktops_table_head%}
       <th>#</th>
       <th>Desktop Name</th>
-      <th>Ami</th>
-      <th>Owner</th>
+      <th>Operating System</th>
       <th>Current State</th>
-      <th>Public Dns</th>
+      <!--<th>Public Dns</th>-->
       <th>Creation Date</th>
       {% endblock %}
     </thead>
@@ -64,12 +63,13 @@ body {
       {% for desktop in my_desktops %}
         <tr>
           <td>
-          <a href="/desktops/delete/{{desktop.name}}" ><span class="glyphicon glyphicon-remove black"></a></td>
+          <a href="/desktops/delete/{{desktop.id}}" ><span class="glyphicon glyphicon-remove black"></a></td>
           <td>{{ desktop.name }}</td>
-          <td>{{ desktop.ami }}</td>
-          <td>{{ desktop.owner }}</td>
-          <td>{{ desktop.state }}</td>
-          <td>{{ desktop.dns }}</td>
+          <td> desktop.os </td>
+          <td>
+          <a href="/desktops/toggle/{{desktop.state}}/{{desktop.id}}" title="toggle state">{{desktop.state}}</a></td>
+          </td>
+          <!--<td>{{ desktop.dns }}</td>-->
           <td>{{ desktop.creation_date }}</td>
         </tr>
       {% endfor %}
@@ -77,7 +77,7 @@ body {
       <form action="/desktops/create" method="post" enctype="multipart/form-data">{% csrf_token %}
         <fieldset>
           <tr>
-  	    <td>#</td>
+  	    <td/>
 	    {% for field in form %}
 	    <td>{{ field }}</td>
 	    {% endfor %}
